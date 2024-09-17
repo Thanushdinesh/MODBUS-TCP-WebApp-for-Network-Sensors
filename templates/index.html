@@ -1,0 +1,138 @@
+User
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register Data from SQL Database</title>
+<h1>Register Data from SQL Database</h1>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f2f2f2; /* Light gray background */
+        position: relative;
+    }
+
+    .container {
+        width: 75%;
+        margin: 0 auto;
+        max-height: 600px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: #fff; /* White background for container */
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light gray shadow */
+    }
+
+    h1 {
+        text-align: center;
+        color: #333; /* Dark gray text color */
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #ccc; /* Light gray header background */
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9; /* Light gray alternate row background */
+    }
+
+    tr:hover {
+        background-color: #e0e0e0; /* Darker gray hover color */
+    }
+
+    .status-box {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .refresh-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Register Number</th>
+                    <th>Register Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="status-box" id="statusBox">Server Not Connected</div>
+
+    <button class="refresh-button" onclick="location.reload()">Refresh</button>
+
+    <script>
+        function checkServerConnection() {
+            fetch('/check-connection')
+            .then(response => response.json())
+            .then(data => {
+                const statusBox = document.getElementById('statusBox');
+                if (data.status === 'connected') {
+                    statusBox.textContent = 'Server Connected';
+                } else {
+                    statusBox.textContent = 'Server Not Connected';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        checkServerConnection(); // Check server connection status immediately
+        setInterval(checkServerConnection, 5000); // Check server connection status every 5 seconds
+    </script>
+    
+</body>
+</html>
